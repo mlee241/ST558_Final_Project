@@ -28,7 +28,6 @@ shinyUI(dashboardPage(
               box(
                 h3("The purpose of this application"),
                 ".....The purpose of this application is to run a couple of regression models on insurance premium..... and to make predictions for future medical expenses of individuals that would help medical insurance to make business decisions on charging a premium."
-                #width = 10
               ),
               box(
                 h3("The data and its source"),
@@ -38,12 +37,10 @@ shinyUI(dashboardPage(
                 "More information can be found below:",
                 br(),
                 a("Go to Kaggle for more info about the data",href="https://www.kaggle.com/noordeen/insurance-premium-prediction")
-                #title = "Briefly discuss the data and its source - providing a link to more information about the data",
-                #width = 10
               )
             ),
             fluidRow(
-              tabBox(#h3("Tell the user the purpose of each tab(page) of the app"),
+              tabBox(
                 tabPanel("About",
                          "So the purpose of the About page is to:",
                          tags$ul(
@@ -52,15 +49,6 @@ shinyUI(dashboardPage(
                            tags$li("Tell the user the purpose of each page of the app"),
                            tags$li("Include a picture related to the data")
                          )
-                         # br(),
-                         # br(),
-                         # "* Describe the purpose of the app",
-                         # br(),
-                         # "* Briefly discuss the data and its source",
-                         # br(),
-                         # "* Tell the user the purpose of each page of the app",
-                         # br(),
-                         # "* Include a picture related to the data"
                          ),
                 tabPanel("Data",
                          "The purpose of the Data page is to:",
@@ -69,13 +57,6 @@ shinyUI(dashboardPage(
                            tags$li("Subset the insurance dataset"),
                            tags$li("Save the possibly subsetted data as a file")
                          )
-                         # br(),
-                         # br(),
-                         # "* Scroll through the insurance data set",
-                         # br(),
-                         # "* Subset the insurance dataset",
-                         # br(),
-                         # "* Save the possibly subsetted data as a file"
                          ),
                 tabPanel("Data Exploration",
                          "The purpose of the Data Exploration page is to:",
@@ -84,13 +65,6 @@ shinyUI(dashboardPage(
                            tags$li("Change the type of plot and type of summary being reported"),
                            tags$li("Change the variables and filter the rows to change the data in the plots/summaries")
                          )
-                         # br(),
-                         # br(),
-                         # "* Create numerical and graphical summaries. Plots should be downloadable and one of the plots should be interactive",
-                         # br(),
-                         # "* Change the type of plot and type of summary being reported",
-                         # br(),
-                         # "* Change the variables and filter the rows to change the data in the plots/summaries"
                          ),
                 tabPanel("Modeling",
                          "The purpose of the Modeling page is to:",
@@ -102,11 +76,7 @@ shinyUI(dashboardPage(
                          ))
               ),
               box(
-                # HTML(
-                #   '<img src="insurancepremiumpic.png/>'
-                # )
                 img(src="insurancepremiumpic.png", width=100, align="center"),
-                #""
               )
             ),
             
