@@ -1,0 +1,13 @@
+library(DT)
+library(ggplot2)
+library(plotly)
+library(shiny)
+library(shinydashboard)
+library(caret)
+library(dplyr)
+library(randomForest)
+library(tidyverse)
+library(tree)
+library(png)
+
+insurance_data <- read.csv("insurance.csv")

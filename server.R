@@ -1,7 +1,5 @@
-library(caret)
-library(dplyr)
-library(ggplot2)
-library(randomForest)
-library(shiny)
-library(tidyverse)
-library(tree)
+source("shared.R")
+
+shinyServer(function(input,output,session){
+  
+})
