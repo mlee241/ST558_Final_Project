@@ -1,0 +1,7 @@
+library(caret)
+library(dplyr)
+library(ggplot2)
+library(randomForest)
+library(shiny)
+library(tidyverse)
+library(tree)
