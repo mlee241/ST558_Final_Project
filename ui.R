@@ -163,7 +163,113 @@ shinyUI(dashboardPage(
                 ) # End of numerical Tab Panel
               ) # End of Tabset Panel
               ),# End of Data Exploration tab
-      tabItem(tabName = "modeling")
+      tabItem(tabName = "modeling",
+              tabsetPanel(
+                tabPanel("Modeling Info",
+                         fluidRow(
+                           box(
+                             strong("Multiple Linear Regression: "),
+                             "Multiple Linear Regression is like a simple linear regression model, but can include more explanatory variables and/or higher order terms.",
+                             br(),
+                             br(),
+                             strong("Benefits: "),
+                             "In terms of benefits of using a multiple linear regression, one can find the relationship between the response variable and several explanatory variable.", 
+                             br(), 
+                             br(),
+                             strong("Disadvantages: "),
+                             "The disadvantages of using a multiple linear regression is that as more terms are added, it is hard to interpret the model and multicollinearity"
+                             ,#width=12,
+                             br(),
+                             br(),
+                             "Example Multiple Linear Regression:",
+                             withMathJax(
+                               helpText('\\(Y_i= \\beta_0\\ + \\beta_1X_{1i}\\ + \\beta_2X_{2i}\\ + \\beta_3X_{1i}X_{2i}+E_i\\) ')
+                             )
+                           ),
+                           box(
+                             strong("Regression Trees: "),
+                             "So the purpose of using the tree based method is to split up predictor space into regions. Different predictions for each region. The purpose of the regression tree is to predcit a continuous response meaning for a given region, usually use mean of observations as prediction.",
+                             br(),
+                             br(),
+                             strong("Benefits: "),
+                             "In terms of benefits of using a regression tree, it is easy to interpret the regression tree model and works well on both linear and non-linear datasets.", 
+                             br(), 
+                             br(),
+                             strong("Disadvantages:"),
+                             "The disadvantages of using a regression tree is that it easily leads to overfitting and does not do so well on small datasets."
+                           ),
+                           box(
+                             strong("Random Forest: "),
+                             "So the purpose of using the random forest based method is to create multiple trees from boostrap samples and get average results. The difference between a random forest and bagging is that for random forests, it does not use all the predictors and use a random subset of predictors for each boostrap sample/tree fit.",
+                             br(),
+                             br(),
+                             strong("Benefits: "),
+                             "In terms of benefits of using a random forest, it produces an accurate result and works well with non-linear data.", 
+                             br(), 
+                             br(),
+                             strong("Disadvantages:"),
+                             "The disadvantages of using a random forest is that it is not easily interpretable and we would need to choose the number of trees."
+                           )
+                         )
+                  #sidebarLayout(
+                  #)
+                ),
+                tabPanel("Modeling Fitting",
+                  sidebarLayout(
+                    sidebarPanel(
+                      sliderInput("proportion", "Proportion of data you want to use: ",
+                                  min = 0.1, max = 0.9, value = 0.5, step = 0.1),
+                      strong("Note to users: "),
+                      "For the models, only age, bmi, and children variables will be used to run the models.",
+                      checkboxInput("mlrmodel","Check if you want to display the multiple linear regression model: "),
+                      checkboxInput("rtmodel","Check if you want to display the regression tree model: "),
+                      #checkboxInput("rfmodel","Check if you want to display the random forestmodel: "),
+                      conditionalPanel(
+                        condition = "input.mlrmodel == 1",
+                        checkboxInput("ageid", "Age"),
+                        #checkboxInput("sexid", "Sex"),
+                        checkboxInput("bmiid", "BMI"),
+                        checkboxInput("childrenid", "Children")#,
+                        #checkboxInput("smokerid", "Smoker"),
+                        #checkboxInput("regionid", "Region")
+                      ),
+                      conditionalPanel(
+                        condition = "input.rtrmodel == 1",
+                        checkboxInput("ageid", "Age"),
+                        #checkboxInput("sexid", "Sex"),
+                        checkboxInput("bmiid", "BMI"),
+                        checkboxInput("childrenid", "Children")#,
+                        #checkboxInput("smokerid", "Smoker"),
+                        #checkboxInput("regionid", "Region")
+                      )
+                    ),
+                    mainPanel(
+                      #dataTableOutput("data_train")
+                      box(tableOutput("mlrmodelplot"),width=12),
+                      box(
+                        strong("Note to users: "),
+                        br(),
+                        "Lower RMSE indicates Better fit.",
+                        br(),
+                        "Higher R squared value is better.",
+                        width=12
+                      ),
+                      box(tableOutput("rtrmodelplot"),width=12)
+                    )
+                  )
+                ),
+                tabPanel("Prediction",
+                  sidebarLayout(
+                    sidebarPanel(
+                      
+                    ),
+                    mainPanel(
+                      
+                    )
+                  )
+                )
+              )
+              )
     ) # End of tabItems
   )# End of dashboardBody
   

@@ -7,6 +7,11 @@ shinyServer(function(input,output,session){
      newData <- insurance_data_update #%>% filter(sex == input$sex)#, smoker==input$smoker, region==input$region)
   })
   
+  # This data will be used for running the models because if I do not filter, that will be a lot of combinations for the models.
+  getmodelData <- reactive({
+    newmodelData <- insurance_data_update %>%select(age,bmi,children,expenses)# filter(sex == input$sex)#, smoker==input$smoker, region==input$region)
+  })
+  
   tableData <- reactive({
     if(input$dataset==TRUE){
       if(input$sex==0){
@@ -132,6 +137,155 @@ shinyServer(function(input,output,session){
     }
     numerical_summary_table
   })
+  
+  #Train split data
+  trainsplit <- reactive({
+    set.seed(123) # For reproducibility
+    train = sample(1:nrow(getmodelData()), size=nrow(getmodelData())*input$proportion)
+  })
+  traindata <- reactive({
+    train_data = getmodelData()[trainsplit(), ]
+  })
+  # Reading in the data
+  # output$data_train = renderDataTable({
+  #   traindata()
+  # })
+  testpilot <- reactive({
+    test = dplyr::setdiff(1:nrow(getmodelData()), trainsplit())
+  })
+  testdata <- reactive({
+    test_data = getmodelData()[testpilot(), ]
+  })
+  
+  #test = dplyr::setdiff(1:nrow(insurance_data_update), train)
+  #test_data = insurance_data_update[test, ]
+  
+  # Build Multiple linear Regression Model and plot
+  
+  output$mlrmodelplot = renderTable({
+    set.seed(123)
+    # expl = c("age","bmi","children")
+    # lm_train = function(expl){
+    #   form = as.formula(paste("expenses~ ",paste(expl,collapse = "+")))
+    #   fit1 <- train(form, data = traindata(),
+    #                 method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+    #                                                                                            number = 5))
+    #   fit1$results
+    # }
+    # if(input$mlrmodel){
+    #   if(input$ageid & !input$sexid & !input$bmiid & !input$childrenid & !input$smokerid & !input$regionid){
+    #     if("age" %in% expl){
+    #       list2 <- append(expl[1])
+    #       lm_train(list2[1])
+    #     }
+    #     #lm_train(expl[1])
+    #   }
+    # }
+    if(input$mlrmodel){
+      if(input$ageid & !input$bmiid & !input$childrenid){
+       # model1 <- lm (expenses~ age, data=traindata())
+        fit1 <- train(expenses ~ age, data = traindata(),
+                      method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+                                                                                                 number = 5))
+        #summary(model1)$coeffiients
+        fit1$results
+      } else if(!input$ageid & input$bmiid & !input$childrenid){
+        fit1 <- train(expenses ~ bmi, data = traindata(),
+                      method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+                                                                                                 number = 5))
+        fit1$results
+      } else if(!input$ageid & !input$bmiid & input$childrenid){
+        fit1 <- train(expenses ~ children, data = traindata(),
+                      method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+                                                                                                 number = 5))
+        fit1$results
+      } else if(input$ageid & input$bmiid & !input$childrenid){
+        fit1 <- train(expenses ~ age+bmi, data = traindata(),
+                      method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+                                                                                                 number = 5))
+        fit1$results
+      } else if(input$ageid & !input$bmiid & input$childrenid){
+        fit1 <- train(expenses ~ age+children, data = traindata(),
+                      method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+                                                                                                 number = 5))
+        fit1$results
+      } else if(!input$ageid & input$bmiid & input$childrenid){
+        fit1 <- train(expenses ~ bmi+children, data = traindata(),
+                      method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+                                                                                                 number = 5))
+        fit1$results
+      } else if(input$ageid & input$bmiid & input$childrenid){
+        fit1 <- train(expenses ~ age+bmi+children, data = traindata(),
+                      method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+                                                                                                 number = 5))
+        fit1$results
+      } 
+    }
+  })
+  
+  
+  # Build Multiple linear Regression Model and plot
+  
+  output$rtrmodelplot = renderPrint({
+    set.seed(123)
+    if(input$rtrmodel){
+      if(input$ageid & !input$bmiid & !input$childrenid){
+        fit1 <- tree(expenses ~age, data=traindata())
+        #print(fit1)
+        summaryfit1 <- summary(fit1)
+        summaryfit1
+        #fit1$results
+      } else if(!input$ageid & input$bmiid & !input$childrenid){
+        fit1 <- tree(expenses ~bmi, data=traindata())
+        #fit1 <- train(expenses ~ bmi, data = traindata(),
+        #              method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+         #                                                                                        number = 5))
+        #fit1$results
+      } else if(!input$ageid & !input$bmiid & input$childrenid){
+        fit1 <- tree(expenses ~children, data=traindata())
+        # fit1 <- train(expenses ~ children, data = traindata(),
+        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+        #                                                                                          number = 5))
+        #fit1$results
+      } else if(input$ageid & input$bmiid & !input$childrenid){
+        fit1 <- tree(expenses ~age+bmi, data=traindata())
+        # fit1 <- train(expenses ~ age+bmi, data = traindata(),
+        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+        #                                                                                          number = 5))
+        #fit1$results
+      } else if(input$ageid & !input$bmiid & input$childrenid){
+        fit1 <- tree(expenses ~age+children, data=traindata())
+        # fit1 <- train(expenses ~ age+children, data = traindata(),
+        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+        #                                                                                          number = 5))
+        #fit1$results
+      } else if(!input$ageid & input$bmiid & input$childrenid){
+        fit1 <- tree(expenses ~bmi+children, data=traindata())
+        # fit1 <- train(expenses ~ bmi+children, data = traindata(),
+        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+        #                                                                                          number = 5))
+        #fit1$results
+      } else if(input$ageid & input$bmiid & input$childrenid){
+        fit1 <- tree(expenses ~age+bmi+children, data=traindata())
+        # fit1 <- train(expenses ~ age+bmi+children, data = traindata(),
+        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+        #                                                                                          number = 5))
+        #fit1$results
+      } 
+    }
+  })
+  
+  
+  # mlr_model = eventReactive(input$generateMLR,
+  #                           {
+  #                             lm(expenses ~ ., data=getData())
+  #                           })
+  # output$MLRCoefficients =renderTable({
+  #   mlrtable = data.frame(mlr_model()$coefficients)
+  #   colnames(mlrtable) = "Coefficients"
+  #   #rownames(mlrtable) = c("Intercept", "age", "sex1", "bmi", "children", "smoker1","region1", "region2","region3")
+  #   mlrtable
+  #   })
   
   
 })
