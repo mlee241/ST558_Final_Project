@@ -97,7 +97,72 @@ shinyUI(dashboardPage(
               dataTableOutput("data_read"),
               downloadButton("data_saved","Download this data")
       ),
-      tabItem(tabName = "dataExploration"),
+      tabItem(tabName = "dataExploration",
+              tabsetPanel(
+                # First tab is for graphical summaries plots
+                tabPanel("Graphs",
+                         sidebarLayout(
+                           sidebarPanel(
+                             selectInput("plotType",
+                                         "Select plot",
+                                         choices = c("Histogram", "Scatter","Box"), selected = "Histogram"),
+                             conditionalPanel(condition = "input.plotType == 'Histogram' ",
+                                              selectInput("varhist", "Select a variable below to make a histogram:",
+                                                          choices = histogramVarNames,
+                                                          selected = "age"),
+                                              sliderInput("numberofbins","Select how many bins you want for this histogram?",
+                                                          min=1, max=10, step = 1, value = 5),
+                                              checkboxInput("colorcode", "Want to color code the histogram?"),
+                                              checkboxInput("overlay", "Want to overlay a density plot to this histogram?"),
+                                              conditionalPanel(condition="input.overlay == 1",
+                                                               sliderInput("alphavalue", "Opacity for the Density plot:",
+                                                                           min = 0.1, max= 1, step=0.1, value = 0.5),
+                                                               sliderInput("adjustvalue", "Adjustment value for the Density plot:",
+                                                                           min = 0.1, max = 1, step = 0.1, value =0.5)
+                                                               )
+                             ),
+                             conditionalPanel(condition = "input.plotType == 'Scatter' ",
+                                              selectInput("varxscatter", "Choose a variable for your X-axis:",
+                                                          choices = histogramVarNames,
+                                                          selected = "age"
+                                                          ),
+                                              selectInput("varyscatter","Choose a variable for your Y-axis:",
+                                                          choices = histogramVarNames,
+                                                          selected = "bmi"),
+                                              checkboxInput("ScatterColorCode", "Do you want to color code the Scatter Plot by sex?"),
+                                              checkboxInput("Scatterline", "Add a line to the plot?:")
+                               
+                             ),
+                             conditionalPanel(condition = "input.plotType == 'Box' ",
+                                              selectInput("Varbox", "Select a variable to create a Boxplot:",
+                                                          choices = histogramVarNames,
+                                                          selected = "age"
+                                                          ),
+                                              checkboxInput("groupby", "Group the Boxplot by sex?")
+                               
+                             )
+                            ),
+                           mainPanel(
+                             box(plotlyOutput("graphicalplots"),
+                                 width = 12)
+                           )
+                         )#, # End of sidebar layout
+                 ), # End of Tab Panel
+                # First tab is for numerical summaries plots
+                tabPanel("Numerical Summaries",
+                         sidebarLayout(
+                           sidebarPanel(
+                             selectInput("numericVariables","Select a variable for numeric Summary",
+                                         choices = histogramVarNames, selected="age"),
+                             checkboxInput("groupbysex", "Do you want to have this summary group by sex?")
+                           ),
+                           mainPanel = (
+                             box(tableOutput("NumericalSummary"),width = 7)
+                           )
+                         ) #End of second sidebar layout
+                ) # End of numerical Tab Panel
+              ) # End of Tabset Panel
+              ),# End of Data Exploration tab
       tabItem(tabName = "modeling")
     ) # End of tabItems
   )# End of dashboardBody
