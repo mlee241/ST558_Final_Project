@@ -28,7 +28,7 @@ shinyUI(dashboardPage(
               fluidRow(
                 box(
                   h3("The purpose of this application"),
-                  ".....The purpose of this application is to run a couple of regression models on insurance premium..... and to make predictions for future medical expenses of individuals that would help medical insurance to make business decisions on charging a premium."
+                  "The purpose of this application is to run a multiple linear regression model, regression tree model, and a random forest model on insurance premium and to make predictions for future medical expenses of individuals that would help medical insurance to make business decisions on charging a premium."
                 ),
                 box(
                   h3("The data and its source"),
@@ -231,19 +231,7 @@ shinyUI(dashboardPage(
                         checkboxInput("bmiid", "BMI"),
                         checkboxInput("childrenid", "Children"),
                         actionButton("generatereport","Fit all three models.")
-                      )#,
-                      # conditionalPanel(
-                      #   condition = "input.rtrmodel == 1",
-                      #   checkboxInput("ageid", "Age"),
-                      #   checkboxInput("bmiid", "BMI"),
-                      #   checkboxInput("childrenid", "Children")
-                      # ),
-                      # conditionalPanel(
-                      #   condition = "input.rfmodel == 1",
-                      #   checkboxInput("ageid", "Age"),
-                      #   checkboxInput("bmiid", "BMI"),
-                      #   checkboxInput("childrenid", "Children")
-                      # )
+                      )
                     ),
                     mainPanel(
                       box(tableOutput("mlrmodelplot"),width=12),
@@ -255,7 +243,7 @@ shinyUI(dashboardPage(
                         "Higher R squared value is better.",
                         width=12
                       ),
-                      #box(tableOutput("rtrmodelplot"),width=12)
+                      #box(tableOutput("rtrmodelplot"),width=12),
                       box(verbatimTextOutput("rtrmodelplot"),width=12),
                       box(tableOutput("rfmodelplot"),width=12)
                     )

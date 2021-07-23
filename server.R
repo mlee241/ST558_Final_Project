@@ -161,12 +161,17 @@ shinyServer(function(input,output,session){
   #test_data = insurance_data_update[test, ]
   
   # Build Multiple linear Regression Model and plot
-  
+  # result <- eventReactive(input$generatereport,{
+  #   if(is.null(input$ageid)){
+  #     return("Did not hit age")
+  #   }
+  #   
+  # })
   output$mlrmodelplot = renderTable({
     set.seed(123)
     if(input$mlrmodel){
       if(input$ageid & !input$bmiid & !input$childrenid){
-       # model1 <- lm (expenses~ age, data=traindata())
+        # model1 <- lm (expenses~ age, data=traindata())
         fit1 <- train(expenses ~ age, data = traindata(),
                       method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
                                                                                                  number = 5))
