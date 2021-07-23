@@ -222,29 +222,30 @@ shinyUI(dashboardPage(
                       strong("Note to users: "),
                       "For the models, only age, bmi, and children variables will be used to run the models.",
                       checkboxInput("mlrmodel","Check if you want to display the multiple linear regression model: "),
-                      checkboxInput("rtmodel","Check if you want to display the regression tree model: "),
-                      #checkboxInput("rfmodel","Check if you want to display the random forestmodel: "),
+                      checkboxInput("rtrmodel","Check if you want to display the regression tree model: "),
+                      checkboxInput("rfmodel","Check if you want to display the random forest model: "),
+                      hr(),
                       conditionalPanel(
-                        condition = "input.mlrmodel == 1",
+                        condition = "input.mlrmodel == 1 | input.rtrmodel==1 | input.rfmodel==1",
                         checkboxInput("ageid", "Age"),
-                        #checkboxInput("sexid", "Sex"),
                         checkboxInput("bmiid", "BMI"),
-                        checkboxInput("childrenid", "Children")#,
-                        #checkboxInput("smokerid", "Smoker"),
-                        #checkboxInput("regionid", "Region")
-                      ),
-                      conditionalPanel(
-                        condition = "input.rtrmodel == 1",
-                        checkboxInput("ageid", "Age"),
-                        #checkboxInput("sexid", "Sex"),
-                        checkboxInput("bmiid", "BMI"),
-                        checkboxInput("childrenid", "Children")#,
-                        #checkboxInput("smokerid", "Smoker"),
-                        #checkboxInput("regionid", "Region")
-                      )
+                        checkboxInput("childrenid", "Children"),
+                        actionButton("generatereport","Fit all three models.")
+                      )#,
+                      # conditionalPanel(
+                      #   condition = "input.rtrmodel == 1",
+                      #   checkboxInput("ageid", "Age"),
+                      #   checkboxInput("bmiid", "BMI"),
+                      #   checkboxInput("childrenid", "Children")
+                      # ),
+                      # conditionalPanel(
+                      #   condition = "input.rfmodel == 1",
+                      #   checkboxInput("ageid", "Age"),
+                      #   checkboxInput("bmiid", "BMI"),
+                      #   checkboxInput("childrenid", "Children")
+                      # )
                     ),
                     mainPanel(
-                      #dataTableOutput("data_train")
                       box(tableOutput("mlrmodelplot"),width=12),
                       box(
                         strong("Note to users: "),
@@ -254,7 +255,9 @@ shinyUI(dashboardPage(
                         "Higher R squared value is better.",
                         width=12
                       ),
-                      box(tableOutput("rtrmodelplot"),width=12)
+                      #box(tableOutput("rtrmodelplot"),width=12)
+                      box(verbatimTextOutput("rtrmodelplot"),width=12),
+                      box(tableOutput("rfmodelplot"),width=12)
                     )
                   )
                 ),

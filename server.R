@@ -164,23 +164,6 @@ shinyServer(function(input,output,session){
   
   output$mlrmodelplot = renderTable({
     set.seed(123)
-    # expl = c("age","bmi","children")
-    # lm_train = function(expl){
-    #   form = as.formula(paste("expenses~ ",paste(expl,collapse = "+")))
-    #   fit1 <- train(form, data = traindata(),
-    #                 method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
-    #                                                                                            number = 5))
-    #   fit1$results
-    # }
-    # if(input$mlrmodel){
-    #   if(input$ageid & !input$sexid & !input$bmiid & !input$childrenid & !input$smokerid & !input$regionid){
-    #     if("age" %in% expl){
-    #       list2 <- append(expl[1])
-    #       lm_train(list2[1])
-    #     }
-    #     #lm_train(expl[1])
-    #   }
-    # }
     if(input$mlrmodel){
       if(input$ageid & !input$bmiid & !input$childrenid){
        # model1 <- lm (expenses~ age, data=traindata())
@@ -237,55 +220,80 @@ shinyServer(function(input,output,session){
         #fit1$results
       } else if(!input$ageid & input$bmiid & !input$childrenid){
         fit1 <- tree(expenses ~bmi, data=traindata())
-        #fit1 <- train(expenses ~ bmi, data = traindata(),
-        #              method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
-         #                                                                                        number = 5))
-        #fit1$results
+        summaryfit1 <- summary(fit1)
+        summaryfit1
       } else if(!input$ageid & !input$bmiid & input$childrenid){
         fit1 <- tree(expenses ~children, data=traindata())
-        # fit1 <- train(expenses ~ children, data = traindata(),
-        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
-        #                                                                                          number = 5))
-        #fit1$results
+        summaryfit1 <- summary(fit1)
+        summaryfit1
       } else if(input$ageid & input$bmiid & !input$childrenid){
         fit1 <- tree(expenses ~age+bmi, data=traindata())
-        # fit1 <- train(expenses ~ age+bmi, data = traindata(),
-        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
-        #                                                                                          number = 5))
-        #fit1$results
+        summaryfit1 <- summary(fit1)
+        summaryfit1
       } else if(input$ageid & !input$bmiid & input$childrenid){
         fit1 <- tree(expenses ~age+children, data=traindata())
-        # fit1 <- train(expenses ~ age+children, data = traindata(),
-        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
-        #                                                                                          number = 5))
-        #fit1$results
+        summaryfit1 <- summary(fit1)
+        summaryfit1
       } else if(!input$ageid & input$bmiid & input$childrenid){
         fit1 <- tree(expenses ~bmi+children, data=traindata())
-        # fit1 <- train(expenses ~ bmi+children, data = traindata(),
-        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
-        #                                                                                          number = 5))
-        #fit1$results
+        summaryfit1 <- summary(fit1)
+        summaryfit1
       } else if(input$ageid & input$bmiid & input$childrenid){
         fit1 <- tree(expenses ~age+bmi+children, data=traindata())
-        # fit1 <- train(expenses ~ age+bmi+children, data = traindata(),
-        #               method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
-        #                                                                                          number = 5))
-        #fit1$results
+        summaryfit1 <- summary(fit1)
+        summaryfit1
+      } 
+    }
+  })
+  
+  #Random Forest
+  output$rfmodelplot = renderTable({
+    set.seed(123)
+    if(input$rfmodel){
+      if(input$ageid & !input$bmiid & !input$childrenid){
+        # model1 <- lm (expenses~ age, data=traindata())
+        fit1<-randomForest(expenses~age, data=traindata(), mtry=ceiling(ncol(traindata()/3)),ntree=100,importance=TRUE)
+        # fit1 <- train(expenses ~ age, data = traindata(),
+        #               method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
+        #                                                                                          number = 3,repeats = 2))
+        #summary(model1)$coeffiients
+        fit1$results
+      } else if(!input$ageid & input$bmiid & !input$childrenid){
+        fit1 <- train(expenses ~ bmi, data = traindata(),
+                      method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
+                                                                                                 number = 3,repeats = 3))
+        fit1$results
+      } else if(!input$ageid & !input$bmiid & input$childrenid){
+        fit1 <- train(expenses ~ children, data = traindata(),
+                      method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
+                                                                                                 number = 3,repeats = 3))
+        fit1$results
+      } else if(input$ageid & input$bmiid & !input$childrenid){
+        fit1 <- train(expenses ~ age+bmi, data = traindata(),
+                      method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
+                                                                                                 number = 3,repeats = 3))
+        fit1$results
+      } else if(input$ageid & !input$bmiid & input$childrenid){
+        fit1 <- train(expenses ~ age+children, data = traindata(),
+                      method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeated",
+                                                                                                 number = 3,repeats=3))
+        fit1$results
+      } else if(!input$ageid & input$bmiid & input$childrenid){
+        fit1 <- train(expenses ~ bmi+children, data = traindata(),
+                      method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
+                                                                                                 number = 3,repeats = 3))
+        fit1$results
+      } else if(input$ageid & input$bmiid & input$childrenid){
+        fit1 <- train(expenses ~ age+bmi+children, data = traindata(),
+                      method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
+                                                                                                 number = 3,repeats = 3))
+        fit1$results
       } 
     }
   })
   
   
-  # mlr_model = eventReactive(input$generateMLR,
-  #                           {
-  #                             lm(expenses ~ ., data=getData())
-  #                           })
-  # output$MLRCoefficients =renderTable({
-  #   mlrtable = data.frame(mlr_model()$coefficients)
-  #   colnames(mlrtable) = "Coefficients"
-  #   #rownames(mlrtable) = c("Intercept", "age", "sex1", "bmi", "children", "smoker1","region1", "region2","region3")
-  #   mlrtable
-  #   })
+
   
   
 })
