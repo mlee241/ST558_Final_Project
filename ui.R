@@ -220,32 +220,38 @@ shinyUI(dashboardPage(
                       sliderInput("proportion", "Proportion of data you want to use: ",
                                   min = 0.1, max = 0.9, value = 0.5, step = 0.1),
                       strong("Note to users: "),
-                      "For the models, only age, bmi, and children variables will be used to run the models.",
+                      "For the models, only age, bmi, and children variables will be used to run the models. Everytime you check/uncheck or select a different option for the variables, you are going to have to hit the button for the new results to show up.",
                       checkboxInput("mlrmodel","Check if you want to display the multiple linear regression model: "),
                       checkboxInput("rtrmodel","Check if you want to display the regression tree model: "),
                       checkboxInput("rfmodel","Check if you want to display the random forest model: "),
+                      strong("Note about multiple linear regression model: "),
+                      "Lower RMSE indicates a better fit and a higher R squared value is better.",
+                      br(),
+                      br(),
+                      #strong("Note about regression tree model: "),
+                      #"",
+                      #br(),
+                      #br(),
+                      strong("Note about random forest model: "), 
+                      "When selecting for the random forest model, select two variables to get an output because selecting only one variable will result in an invalid mtry.",
                       hr(),
                       conditionalPanel(
                         condition = "input.mlrmodel == 1 | input.rtrmodel==1 | input.rfmodel==1",
-                        checkboxInput("ageid", "Age"),
-                        checkboxInput("bmiid", "BMI"),
-                        checkboxInput("childrenid", "Children"),
-                        actionButton("generatereport","Fit all three models.")
+                        selectInput("selectvariables", "Select variables: ", choices = c("age","bmi","children", "age & bmi", "age & children", "bmi & children","age & bmi & children"), selected = "age"),
+                        #checkboxInput("ageid", "Age"),
+                        #checkboxInput("bmiid", "BMI"),
+                        #checkboxInput("childrenid", "Children"),
+                        #hr(),
+                        actionButton("generatereport","Fit all three models"),
+                        #actionButton("generatereportrt","Fit the regression tree model"),
+                        #actionButton("generatereportrf","Fit the random forest model")
                       )
                     ),
                     mainPanel(
-                      box(tableOutput("mlrmodelplot"),width=12),
-                      box(
-                        strong("Note to users: "),
-                        br(),
-                        "Lower RMSE indicates Better fit.",
-                        br(),
-                        "Higher R squared value is better.",
-                        width=12
-                      ),
+                      box(h4(strong("Multiple Linear Regression model")),tableOutput("mlrmodelplot"),width=12),
                       #box(tableOutput("rtrmodelplot"),width=12),
-                      box(verbatimTextOutput("rtrmodelplot"),width=12),
-                      box(tableOutput("rfmodelplot"),width=12)
+                      box(h4(strong("Regression tree model")),verbatimTextOutput("rtrmodelplot"),width=12),
+                      box(h4(strong("Random Forest model")),tableOutput("rfmodelplot"),width=12)
                     )
                   )
                 ),
