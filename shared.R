@@ -27,15 +27,7 @@ insurance_data_update <- insurance_data %>% dplyr::transmute(
   expenses = expenses
 )
 
-#set.seed(123)
 
-
-# train = sample(1:nrow(insurance_data_update), size=nrow(insurance_data_update)*0.7)
-# test = dplyr::setdiff(1:nrow(insurance_data_update), train)
-# 
-# 
-# train_data = insurance_data_update[train, ]
-# test_data = insurance_data_update[test, ]
 
 
 histogramVarNames = names(insurance_data_update %>% dplyr::select(-sex, -smoker, -region, -children))

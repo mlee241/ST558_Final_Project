@@ -1,10 +1,6 @@
 source("shared.R")
 
-# An About page
-# * Describe the purpose of the app
-# * Briefly discuss the data and its source- providing a link to more information about the data
-# * Tell the user the purpose of each tab(page) of the app
-# * Include a picture related to the data (for instance, if the data was about the world wildlife fund, you might include a picture of their logo)
+
 
 shinyUI(dashboardPage(
   # Insurance title
@@ -260,10 +256,19 @@ shinyUI(dashboardPage(
                 tabPanel("Prediction",
                   sidebarLayout(
                     sidebarPanel(
-                      
+                      selectInput("selectingmodel", "Select a model to be used for your prediction:",choices =c("Multiple Linear Regression","Regression tree", "Random Forest", selected = "Multiple Linear Regression")),
+                      sliderInput("ageinput", "Select a value for Age:", min = 10, max=70, step = 1, value = 18),
+                      sliderInput("bmiinput", "Select a value for BMI:", min = 10.0, max = 60, step =0.1, value = 30),
+                      sliderInput("childreninput", "Select a value for Children", min=0, max=8, step = 1, value = 3),
+                      actionButton("makeprediction","Make prediction!"),
+                      br(),
+                      br(),
+                      strong("Note: "),
+                      p("If you see an error like this:"),p("error in evaluating the argument 'object' in selecting a method for function 'predict':",style = "color:red"),p(", that means you did not create the model in the Modeling Fitting tab.")
+                      #p("If you see no prediction after you clicked the button, that means you did not create the model in the Modeling Fitting tab.")
                     ),
                     mainPanel(
-                      
+                      box(h4("The Predicted Expense is: "),verbatimTextOutput("displayprediction"),width=12)
                     )
                   )
                 )

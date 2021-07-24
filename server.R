@@ -460,6 +460,60 @@ shinyServer(function(input,output,session){
     rftestbutton()
   })
   
+  # This will be used for the prediction
+  newdatapred = eventReactive(input$makeprediction, {
+    data.frame(
+      age =input$ageinput,
+      bmi =input$bmiinput,
+      children =input$childreninput
+    )
+  })
+  mlrmodel.pred = eventReactive(input$generatereport,{
+    fit1 <- train(expenses ~ age+bmi+children, data = traindata(),
+                  method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
+                                                                                             number = as.numeric(input$numcv)))
+  })
+  
+  rtmodel.pred = eventReactive(input$generatereport,{
+    fit2 <- tree(expenses ~age+bmi+children, data=traindata(),split = input$selectionIndex)
+  })
+  
+  rfmodel.pred = eventReactive(input$generatereport,{
+    fit3 <- train(expenses ~ age+bmi+children, data = traindata(),
+                  method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
+                                                                                             number = 3,repeats = input$numrepeats))
+    
+
+  })
+  
+  prediction = eventReactive(input$makeprediction,{
+    if(input$selectingmodel == "Multiple Linear Regression"){
+      pred1 <- predict(mlrmodel.pred(),newdata=newdatapred())
+    } else if (input$selectingmodel == "Regression tree"){
+      pred2 <- predict(rtmodel.pred(), newdata=newdatapred())
+    } else if (input$selectingmodel == "Random Forest"){
+      pred3 <- predict(rfmodel.pred(), newdata=newdatapred())
+    }
+  })
+  
+  output$displayprediction = renderText({
+    prediction()
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 
   
