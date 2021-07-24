@@ -146,10 +146,7 @@ shinyServer(function(input,output,session){
   traindata <- reactive({
     train_data = getmodelData()[trainsplit(), ]
   })
-  # Reading in the data
-  # output$data_train = renderDataTable({
-  #   traindata()
-  # })
+
   testpilot <- reactive({
     test = dplyr::setdiff(1:nrow(getmodelData()), trainsplit())
   })
@@ -278,49 +275,49 @@ shinyServer(function(input,output,session){
         fit1 <- train(expenses ~ age, data = traindata(),
                       method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
                                                                                                  number = as.numeric(input$numcv)))
-        #fit1$results
+
         pred1 <- predict(fit1,newdata=testdata())
         t(postResample(pred1, obs = testdata()$expenses))
       } else if(input$selectvariables == "bmi"){
         fit1 <- train(expenses ~ bmi, data = traindata(),
                       method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
                                                                                                  number = as.numeric(input$numcv)))
-        #fit1$results
+
         pred1 <- predict(fit1,newdata=testdata())
         t(postResample(pred1, obs = testdata()$expenses))
       } else if(input$selectvariables == "children"){
         fit1 <- train(expenses ~ children, data = traindata(),
                       method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
                                                                                                  number = as.numeric(input$numcv)))
-        #fit1$results
+
         pred1 <- predict(fit1,newdata=testdata())
         t(postResample(pred1, obs = testdata()$expenses))
       } else if(input$selectvariables == "age & bmi"){
         fit1 <- train(expenses ~ age+bmi, data = traindata(),
                       method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
                                                                                                  number = as.numeric(input$numcv)))
-        #fit1$results
+
         pred1 <- predict(fit1,newdata=testdata())
         t(postResample(pred1, obs = testdata()$expenses))
       } else if(input$selectvariables == "age & children"){
         fit1 <- train(expenses ~ age+children, data = traindata(),
                       method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
                                                                                                  number = as.numeric(input$numcv)))
-        #fit1$results
+
         pred1 <- predict(fit1,newdata=testdata())
         t(postResample(pred1, obs = testdata()$expenses))
       } else if(input$selectvariables == "bmi & children"){
         fit1 <- train(expenses ~ bmi+children, data = traindata(),
                       method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
                                                                                                  number = as.numeric(input$numcv)))
-        #fit1$results
+
         pred1 <- predict(fit1,newdata=testdata())
         t(postResample(pred1, obs = testdata()$expenses))
       } else if(input$selectvariables == "age & bmi & children"){
         fit1 <- train(expenses ~ age+bmi+children, data = traindata(),
                       method = "lm", preProcess = c("center", "scale"), trControl = trainControl(method = "cv",
                                                                                                  number = as.numeric(input$numcv)))
-        #fit1$results
+
         pred1 <- predict(fit1,newdata=testdata())
         t(postResample(pred1, obs = testdata()$expenses))
       } 
@@ -333,90 +330,62 @@ shinyServer(function(input,output,session){
     if(input$rtrmodel){
       if(input$selectvariables == "age"){
         fit2 <- tree(expenses ~age, data=traindata(),split = input$selectionIndex)
-        #summaryfit2 <- summary(fit2)
-        #summaryfit2
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rTree_pred <- predict(fit2, newdata = select(testdata(),
                                                      -expenses))
-        #t(postResample(rTree_pred, obs = testdata()$expenses))
+
         rTreepred <- table(rTree_pred, testdata()$expenses)
         rTreepredrecords <- head(data.frame(rTreepred),input$records)
       } else if(input$selectvariables == "bmi"){
         fit2 <- tree(expenses ~bmi, data=traindata(),split = input$selectionIndex)
-        #summaryfit2 <- summary(fit2)
-        #summaryfit2
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rTree_pred <- predict(fit2, newdata = select(testdata(),
                                                      -expenses))
-        #t(postResample(rTree_pred, obs = testdata()$expenses))
+
         rTreepred <- table(rTree_pred, testdata()$expenses)
         rTreepredrecords <- head(data.frame(rTreepred),input$records)
       } else if(input$selectvariables == "children"){
         fit2 <- tree(expenses ~children, data=traindata(),split = input$selectionIndex)
-        #summaryfit2 <- summary(fit2)
-        #summaryfit2
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rTree_pred <- predict(fit2, newdata = select(testdata(),
                                                      -expenses))
-        #t(postResample(rTree_pred, obs = testdata()$expenses))
+
         rTreepred <- table(rTree_pred, testdata()$expenses)
         rTreepredrecords <- head(data.frame(rTreepred),input$records)
       } else if(input$selectvariables == "age & bmi"){
         fit2 <- tree(expenses ~age+bmi, data=traindata(),split = input$selectionIndex)
-        #summaryfit2 <- summary(fit2)
-        #summaryfit2
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rTree_pred <- predict(fit2, newdata = select(testdata(),
                                                      -expenses))
-        #t(postResample(rTree_pred, obs = testdata()$expenses))
+
         rTreepred <- table(rTree_pred, testdata()$expenses)
         rTreepredrecords <- head(data.frame(rTreepred),input$records)
       } else if(input$selectvariables == "age & children"){
         fit2 <- tree(expenses ~age+children, data=traindata(),split = input$selectionIndex)
-        #summaryfit2 <- summary(fit2)
-        #summaryfit2
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rTree_pred <- predict(fit2, newdata = select(testdata(),
                                                      -expenses))
-        #t(postResample(rTree_pred, obs = testdata()$expenses))
+
         rTreepred <- table(rTree_pred, testdata()$expenses)
         rTreepredrecords <- head(data.frame(rTreepred),input$records)
       } else if(input$selectvariables == "bmi & children"){
         fit2 <- tree(expenses ~bmi+children, data=traindata(),split = input$selectionIndex)
-        #summaryfit2 <- summary(fit2)
-        #summaryfit2
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rTree_pred <- predict(fit2, newdata = select(testdata(),
                                                      -expenses))
-        #t(postResample(rTree_pred, obs = testdata()$expenses))
+
         rTreepred <- table(rTree_pred, testdata()$expenses)
         rTreepredrecords <- head(data.frame(rTreepred),input$records)
       } else if(input$selectvariables == "age & bmi & children"){
         fit2 <- tree(expenses ~age+bmi+children, data=traindata(),split = input$selectionIndex)
-        #summaryfit2 <- summary(fit2)
-        #summaryfit2
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rTree_pred <- predict(fit2, newdata = select(testdata(),
                                                      -expenses))
-        #t(postResample(rTree_pred, obs = testdata()$expenses))
+
         rTreepred <- table(rTree_pred, testdata()$expenses)
         rTreepredrecords <- head(data.frame(rTreepred),input$records)
       }
-      # # predict the values for our response variable and compare
-      # # it to our testing data.
-      # rTree_pred <- predict(fit2, newdata = select(testdata(),
-      #                                               -expenses))
-      # #t(postResample(rTree_pred, obs = testdata()$expenses))
-      # rTreepred <- table(rTree_pred, testdata()$expenses)
-      # rTreepredrecords <- head(data.frame(rTreepred),input$records)
-      # #colnames(rTreepred) <- c("Predicted Expense", "Actual Expense")
+
     }
   })
   
@@ -433,9 +402,7 @@ shinyServer(function(input,output,session){
         fit3 <- train(expenses ~ age+bmi, data = traindata(),
                       method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
                                                                                                  number = 3,repeats = input$numrepeats))
-        #fit1$results
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rforest_pred <- predict(fit3, newdata = select(testdata(),
                                                        -expenses))
         t(postResample(rforest_pred, obs = testdata()$expenses))
@@ -443,9 +410,7 @@ shinyServer(function(input,output,session){
         fit3 <- train(expenses ~ age+children, data = traindata(),
                       method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
                                                                                                  number = 3,repeats = input$numrepeats))
-        #fit1$results
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rforest_pred <- predict(fit3, newdata = select(testdata(),
                                                        -expenses))
         t(postResample(rforest_pred, obs = testdata()$expenses))
@@ -453,9 +418,7 @@ shinyServer(function(input,output,session){
         fit3 <- train(expenses ~ bmi+children, data = traindata(),
                       method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
                                                                                                  number = 3,repeats = input$numrepeats))
-        #fit1$results
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rforest_pred <- predict(fit3, newdata = select(testdata(),
                                                        -expenses))
         t(postResample(rforest_pred, obs = testdata()$expenses))
@@ -463,19 +426,12 @@ shinyServer(function(input,output,session){
         fit3 <- train(expenses ~ age+bmi+children, data = traindata(),
                       method = "rf", preProcess = c("center", "scale"), trControl = trainControl(method = "repeatedcv",
                                                                                                  number = 3,repeats = input$numrepeats))
-        #fit1$results
-        # predict the values for our response variable and compare
-        # it to our testing data.
+
         rforest_pred <- predict(fit3, newdata = select(testdata(),
                                                        -expenses))
         t(postResample(rforest_pred, obs = testdata()$expenses))
       }
     }
-    # # predict the values for our response variable and compare
-    # # it to our testing data.
-    # rforest_pred <- predict(fit3, newdata = select(testdata(),
-    #                                                   -expenses))
-    # t(postResample(rforest_pred, obs = testdata()$expenses))
     
   })
   
