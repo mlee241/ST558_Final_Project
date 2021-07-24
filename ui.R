@@ -228,28 +228,17 @@ shinyUI(dashboardPage(
                       "Lower RMSE indicates a better fit and a higher R squared value is better.",
                       br(),
                       br(),
-                      #strong("Note about regression tree model: "),
-                      #"",
-                      #br(),
-                      #br(),
                       strong("Note about random forest model: "), 
                       "When selecting for the random forest model, select two variables to get an output because selecting only one variable will result in an invalid mtry.",
                       hr(),
                       conditionalPanel(
                         condition = "input.mlrmodel == 1 | input.rtrmodel==1 | input.rfmodel==1",
                         selectInput("selectvariables", "Select variables: ", choices = c("age","bmi","children", "age & bmi", "age & children", "bmi & children","age & bmi & children"), selected = "age"),
-                        #checkboxInput("ageid", "Age"),
-                        #checkboxInput("bmiid", "BMI"),
-                        #checkboxInput("childrenid", "Children"),
-                        #hr(),
                         actionButton("generatereport","Fit all three models"),
-                        #actionButton("generatereportrt","Fit the regression tree model"),
-                        #actionButton("generatereportrf","Fit the random forest model")
                       )
                     ),
                     mainPanel(
                       box(h4(strong("Multiple Linear Regression model")),tableOutput("mlrmodelplot"),width=12),
-                      #box(tableOutput("rtrmodelplot"),width=12),
                       box(h4(strong("Regression tree model")),verbatimTextOutput("rtrmodelplot"),width=12),
                       box(h4(strong("Random Forest model")),tableOutput("rfmodelplot"),width=12)
                     )

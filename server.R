@@ -157,16 +157,6 @@ shinyServer(function(input,output,session){
     test_data = getmodelData()[testpilot(), ]
   })
   
-  #test = dplyr::setdiff(1:nrow(insurance_data_update), train)
-  #test_data = insurance_data_update[test, ]
-  
-  # Build Multiple linear Regression Model and plot
-  # result <- eventReactive(input$generatereport,{
-  #   if(is.null(input$ageid)){
-  #     return("Did not hit age")
-  #   }
-  #   
-  # })
   mlrbutton <- eventReactive(input$generatereport,{
     set.seed(123)
     # Multiple linear regression model
@@ -233,7 +223,7 @@ shinyServer(function(input,output,session){
         summaryfit2
       } else if(input$selectvariables == "age & children"){
         fit2 <- tree(expenses ~age+children, data=traindata())
-        summaryfit2 <- summary(fit12)
+        summaryfit2 <- summary(fit2)
         summaryfit2
       } else if(input$selectvariables == "bmi & children"){
         fit2 <- tree(expenses ~bmi+children, data=traindata())
