@@ -451,25 +451,13 @@ shinyServer(function(input,output,session){
   })
   
   output$mlrmodels = renderTable({
-    #if(input$mlrmodel){
-      #if(input$generatereport){
     mlrtestbutton()
-      #}
-    #}
   })
   output$rtmodels = renderTable({
-    #if(input$rtrmodel){
-      #if(input$generatereport){
     rttestbutton()
-      #}
-    #}
   })
   output$rfmodels = renderTable({
-    #if(input$rfmodel){
-      #if(input$generatereport){
     rftestbutton()
-      #}
-    #}
   })
   
   
