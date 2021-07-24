@@ -198,6 +198,8 @@ shinyUI(dashboardPage(
                              strong("Disadvantages:"),
                              "The disadvantages of using a regression tree is that it easily leads to overfitting and does not do so well on small datasets."
                            ),
+                         ),
+                         fluidRow(
                            box(
                              strong("Random Forest: "),
                              "So the purpose of using the random forest based method is to create multiple trees from boostrap samples and get average results. The difference between a random forest and bagging is that for random forests, it does not use all the predictors and use a random subset of predictors for each boostrap sample/tree fit.",
@@ -228,19 +230,30 @@ shinyUI(dashboardPage(
                       "Lower RMSE indicates a better fit and a higher R squared value is better.",
                       br(),
                       br(),
+                      strong("Note about regression tree model: "),
+                      "A very high Residual mean deviance is not good.",
+                      br(),
+                      br(),
                       strong("Note about random forest model: "), 
                       "When selecting for the random forest model, select two variables to get an output because selecting only one variable will result in an invalid mtry.",
                       hr(),
                       conditionalPanel(
                         condition = "input.mlrmodel == 1 | input.rtrmodel==1 | input.rfmodel==1",
+                        selectInput("numcv","Select cross-validation number for multiple regression model: ", choices = c("5","10")),
+                        selectInput("selectionIndex","Select a split index for the regression tree model: ", choices=c("deviance","gini")),
+                        sliderInput("records","Select how many records you want to display when comparing the regression tree mode on the test set: ", min = 1, max = 10, value =5),
+                        sliderInput("numrepeats", "Select the number of complete sets of folds to compute for the random forest model: ", min =3, max = 10, value = 3),
                         selectInput("selectvariables", "Select variables: ", choices = c("age","bmi","children", "age & bmi", "age & children", "bmi & children","age & bmi & children"), selected = "age"),
-                        actionButton("generatereport","Fit all three models"),
+                        actionButton("generatereport","Fit all three models")
                       )
                     ),
                     mainPanel(
                       box(h4(strong("Multiple Linear Regression model")),tableOutput("mlrmodelplot"),width=12),
                       box(h4(strong("Regression tree model")),verbatimTextOutput("rtrmodelplot"),width=12),
-                      box(h4(strong("Random Forest model")),tableOutput("rfmodelplot"),width=12)
+                      box(h4(strong("Random Forest model")),tableOutput("rfmodelplot"),width=12),
+                      box(h4(strong("Multiple Linear Regression model compared on the test set:")),tableOutput("mlrmodels"),width=12),
+                      box(h4(strong("Regression tree model compared on the test set:")),tableOutput("rtmodels"), width=12),
+                      box(h4(strong("Random Forest model compared on the test set:")),tableOutput("rfmodels"), width=12)
                     )
                   )
                 ),
